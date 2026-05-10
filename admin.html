@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | flora & sienna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #faf7f7; margin: 0; padding: 2rem; color: #4a4040; }
+        .container { max-width: 1000px; margin: auto; }
+        .panel { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+        h2 { color: #d49a9e; border-bottom: 2px solid #fce8e8; padding-bottom: 0.5rem; margin-top: 0; }
+        .admin-form { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 1rem; align-items: end; margin-bottom: 1rem; }
+        input { padding: 0.8rem; border: 1px solid #e8dfdf; border-radius: 6px; width: 100%; box-sizing: border-box; }
+        button { background: #d49a9e; color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .order-card { background: #fdf1f1; border-left: 5px solid #d49a9e; padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 8px; position: relative; }
+        .tag { display: inline-block; background: #e8b4b8; color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem; margin-right: 0.5rem; }
+        .inspo-img { max-width: 250px; border-radius: 8px; border: 2px dashed #d49a9e; margin-top: 10px; display: block; }
+        
+        .status-select { padding: 0.4rem; border-radius: 6px; border: 1px solid #d49a9e; font-family: inherit; font-weight: bold; cursor: pointer; }
+        
+        /* BAGO: Button styles para sa Facebook at SMS */
+        .btn-fb { background: #0084FF; color: white; padding: 0.5rem 1rem; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: bold; margin-left: 10px; }
+        .btn-sms { background: #4CAF50; color: white; padding: 0.5rem 1rem; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: bold; margin-left: 5px; }
+        .action-buttons { display: flex; align-items: center; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="index.html" style="color: #d49a9e; font-weight: bold; text-decoration: none; margin-bottom: 1rem; display: block;">← Back to Main Website</a>
+        
+        <div class="panel">
+            <h2>➕ Add to "On-Hand"</h2>
+            <form id="onhand-form" class="admin-form">
+                <div><label>Image File Name (e.g., 1.png)</label><input type="text" id="oh-img" required></div>
+                <div><label>Bouquet Name</label><input type="text" id="oh-name" required></div>
+                <div><label>Price (₱)</label><input type="number" id="oh-price" required></div>
+                <button type="submit">Add Item</button>
+            </form>
+        </div>
+
+        <div class="panel">
+            <h2>📦 Incoming Customer Orders</h2>
+            <p style="font-size: 0.9rem; color: gray;">Update the status below. Click "Message on FB" to chat with them using your Facebook Page!</p>
+            <div id="orders-container"><p>Waiting for orders...</p></div>
+        </div>
+    </div>
+
+    <script>
+        async function loadOrders() {
+            const res = await fetch('http://localhost:3000/api/orders');
+            const orders = await res.json();
+            const container = document.getElementById('orders-container');
+            
+            if(orders.length === 0) return;
+            
+            container.innerHTML = orders.reverse().map(order => {
+                // SMART FB LINK: Kung link ang nilagay, yun ang bubuksan. Kung name lang, ise-search sa FB!
+                const fbLink = order.fb.includes('http') ? order.fb : `https://www.facebook.com/search/top?q=${encodeURIComponent(order.fb)}`;
+
+                return `
+                <div class="order-card">
+                    <h3 style="margin:0 0 5px 0;">${order.name}</h3>
+                    <p style="margin:0;"><strong>Placed On:</strong> ${order.orderDate}</p>
+                    
+                    <div style="background: white; padding: 10px; border-radius: 8px; margin: 10px 0;">
+                        <p style="margin:5px 0; color: #d49a9e;"><strong>📍 Delivery Details:</strong></p>
+                        <p style="margin:5px 0;"><strong>Place:</strong> ${order.place}</p>
+                        <p style="margin:5px 0;"><strong>When:</strong> ${order.dateNeeded} at ${order.timeNeeded}</p>
+                    </div>
+
+                    <div style="margin-top:10px;">
+                        <span class="tag">Style: ${order.material}</span>
+                        <span class="tag">Budget: ${order.budget.includes('₱') ? order.budget : '₱' + order.budget}</span>
+                    </div>
+                    <p style="margin-top:10px;"><strong>Details:</strong> ${order.details}</p>
+                    
+                    ${order.inspoImage ? `
+                        <div style="margin-top: 15px;">
+                            <strong>Client's Inspiration Photo:</strong><br>
+                            <img src="${order.inspoImage}" class="inspo-img" alt="Inspo Picture">
+                        </div>
+                    ` : ''}
+
+                    <hr style="border: 0; border-top: 1px solid #e8b4b8; margin: 15px 0;">
+                    
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <strong>Order Status:</strong> 
+                            <select class="status-select" onchange="updateStatus(${order.id}, this.value)">
+                                <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>⏳ Pending</option>
+                                <option value="Accepted" ${order.status === 'Accepted' ? 'selected' : ''}>✅ Accepted</option>
+                                <option value="Declined" ${order.status === 'Declined' ? 'selected' : ''}>❌ Declined</option>
+                            </select>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <a href="${fbLink}" target="_blank" class="btn-fb">💬 Message on FB</a>
+                            <a href="sms:${order.contact}" class="btn-sms">📱 Text</a>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        async function updateStatus(id, newStatus) {
+            await fetch(`http://localhost:3000/api/orders/${id}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+        }
+
+        document.getElementById('onhand-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await fetch('http://localhost:3000/api/onhand', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    image: document.getElementById('oh-img').value,
+                    name: document.getElementById('oh-name').value,
+                    price: document.getElementById('oh-price').value
+                })
+            });
+            alert("Added to On-Hand menu!");
+            e.target.reset();
+        });
+
+        loadOrders();
+        setInterval(loadOrders, 5000); 
+    </script>
+</body>
+</html>
