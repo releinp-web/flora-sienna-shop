@@ -10,19 +10,15 @@
         body { font-family: 'Poppins', sans-serif; color: var(--text-dark); margin: 0; padding: 0; scroll-behavior: smooth; background-color: #faf7f7; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e8b4b8' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
         h1, h2, h3 { font-family: 'Playfair Display', serif; }
         a { text-decoration: none; color: var(--text-dark); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate { animation: fadeIn 1s ease-out forwards; }
         nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 5%; background: rgba(255, 255, 255, 0.95); position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 5px rgba(0,0,0,0.02); }
         .nav-links { display: flex; gap: 2rem; font-size: 0.85rem; text-transform: uppercase; font-weight: 500; }
         .logo img { max-height: 50px; } 
         section { padding: 4rem 5%; max-width: 1000px; margin: 0 auto; }
         .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 2rem; }
-        .hero-info { background: var(--white); padding: 3rem; border-radius: 20px; text-align: center; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid #fcf2f2; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; }
         .card { background: var(--white); border-radius: 16px; padding: 1.2rem; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .card img { width: 100%; height: 260px; object-fit: cover; border-radius: 12px; margin-bottom: 1rem; }
         .price { color: var(--pink-dark); font-weight: 600; margin-bottom: 1rem; }
-        .empty-msg { text-align: center; color: #8a7e7e; grid-column: 1 / -1; font-style: italic; }
         .custom-form-container { background: var(--white); padding: 3rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
         .form-group { margin-bottom: 1.5rem; } 
         label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
@@ -31,200 +27,125 @@
         .btn-submit { background-color: var(--pink-dark); color: var(--white); padding: 1rem; border: none; border-radius: 8px; width: 100%; font-size: 1rem; cursor: pointer; font-weight: 600; margin-top: 1rem; }
         #receipt-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1000; justify-content: center; align-items: center; }
         .receipt-box { background: white; padding: 3rem; border-radius: 16px; text-align: center; border-top: 10px solid var(--pink-dark); max-width: 400px; width: 90%; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     </style>
 </head>
 <body>
-
     <nav>
         <div class="nav-links"><a href="#home">Home</a><a href="#menu">On-Hand</a></div>
-        <div class="logo"><img src="logo.png" alt="flora & sienna logo"></div>
+        <div class="logo"><img src="logo.png" alt="flora & sienna"></div>
         <div class="nav-links"><a href="#myworks">My Works</a><a href="#custom">Custom Order</a></div>
     </nav>
 
-    <section id="home" class="animate">
-        <div class="hero-info">
-            <h2 style="color: var(--pink-dark); font-size: 2.2rem; margin:0 0 1rem 0;">Handmade with Love</h2>
-            <p>Every piece is uniquely crafted to bring joy. Delivery: Tue & Thu Only | Meetups Available</p>
-        </div>
-    </section>
-
-    <section id="myworks" class="animate">
+    <section id="myworks">
         <h2 class="section-title">My Works</h2>
-        <div class="grid" id="works-grid"><p class="empty-msg">Loading works...</p></div>
+        <div class="grid" id="works-grid"><p style="text-align:center; grid-column: 1/-1;">Loading works...</p></div>
     </section>
 
-    <section id="menu" class="animate">
+    <section id="menu">
         <h2 class="section-title">On-Hand Items</h2>
-        <div class="grid" id="onhand-grid"><p class="empty-msg">Loading on-hand items...</p></div>
+        <div class="grid" id="onhand-grid"><p style="text-align:center; grid-column: 1/-1;">Loading items...</p></div>
     </section>
 
-    <section id="custom" class="animate">
+    <section id="custom">
         <h2 class="section-title">Design Your Bouquet</h2>
         <div class="custom-form-container">
             <form id="orderForm">
                 <div class="form-group">
-                    <label>1. Choose Material / Style</label>
+                    <label>1. Choose Material</label>
                     <select id="material" required>
-                        <option value="" disabled selected>Select an option...</option>
+                        <option value="" disabled selected>Select...</option>
                         <option value="Fuzzy Wire">Fuzzy Wire</option>
                         <option value="Satin Ribbon">Satin Ribbon</option>
-                        <option value="Inspo Picture">I have an inspiration picture</option>
+                        <option value="Inspo Picture">Inspo Picture</option>
                     </select>
                 </div>
-
                 <div class="form-group hidden" id="photo-only-group">
                     <label>Upload Inspiration Photo</label>
                     <input type="file" id="inspo-file" accept="image/*">
-                    <p style="font-size: 0.8rem; color: #8a7e7e;">(We will base the price and details strictly on this photo!)</p>
                 </div>
-
                 <div id="standard-options">
                     <div class="form-group">
-                        <label>2. Select Budget (₱)</label>
+                        <label>2. Budget (₱)</label>
                         <select id="budget">
-                            <option value="" disabled selected>Choose your budget...</option>
-                            <option value="300">₱ 300 (3 flowers)</option>
-                            <option value="500">₱ 500 (5 flowers, 2 types)</option>
-                            <option value="700">₱ 700 (10 flowers, 3 types)</option>
-                            <option value="1000">₱ 1,000 (12 flowers + fillers)</option>
+                            <option value="300">₱300</option>
+                            <option value="500">₱500</option>
+                            <option value="1000">₱1000</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>What flowers & colors would you like?</label>
-                        <textarea id="flower-details" rows="3"></textarea>
+                        <label>Details</label>
+                        <textarea id="flower-details"></textarea>
                     </div>
                 </div>
-
-                <hr style="border:0; border-top: 1px dashed var(--pink-dark); margin: 2rem 0;">
-                
-                <h3 style="margin-bottom: 1rem; color: var(--pink-dark);">Delivery & Contact Details</h3>
-                
-                <div class="form-group"><label>Delivery Address / Meetup Place</label><input type="text" id="c-place" placeholder="e.g. SM Pampanga or Complete Address" required></div>
-                
-                <div class="grid-2">
-                    <div class="form-group"><label>Date Needed</label><input type="date" id="c-date" required></div>
-                    <div class="form-group"><label>Time Needed</label><input type="time" id="c-time" required></div>
-                </div>
-
-                <div class="form-group"><label>Customer Full Name</label><input type="text" id="c-name" required></div>
-                
-                <div class="form-group">
-                    <label>Facebook Profile Link (Para ma-message namin kayo)</label>
-                    <input type="text" id="c-fb" placeholder="e.g. https://www.facebook.com/flora.sienna" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Contact Number (Philippine Mobile Only)</label>
-                    <input type="text" id="c-number" placeholder="09123456789" pattern="^(09|\+639)\d{9}$" title="Must start with 09 and be 11 digits long" required>
-                </div>
-
-                <button type="submit" class="btn-submit">Place Custom Order</button>
+                <div class="form-group"><label>Full Name</label><input type="text" id="c-name" required></div>
+                <div class="form-group"><label>FB Link</label><input type="text" id="c-fb" required></div>
+                <div class="form-group"><label>Contact</label><input type="text" id="c-number" required></div>
+                <button type="submit" class="btn-submit">Place Order</button>
             </form>
         </div>
     </section>
 
-    <div id="receipt-modal">
-        <div class="receipt-box">
-            <h2 style="color: var(--pink-dark);">Order Sent! 🌸</h2>
-            <p>Thank you, <span id="r-name" style="font-weight: bold;"></span>!</p>
-            <p>We received your request. We will message you on Facebook shortly to confirm if your slot is available!</p>
-            <div style="background: #faf7f7; padding: 1rem; border-radius: 8px; margin: 1rem 0; text-align: left; font-size: 0.9rem;">
-                <strong>Where:</strong> <span id="r-place"></span><br>
-                <strong>When:</strong> <span id="r-datetime"></span><br>
-                <strong>Contact:</strong> <span id="r-number"></span><br>
-                <strong>Style:</strong> <span id="r-style"></span>
-            </div>
-            <button class="btn-submit" onclick="closeReceipt()">Close</button>
-        </div>
-    </div>
+    <div id="receipt-modal"><div class="receipt-box"><h2 id="r-name"></h2><p>Order Sent! Please wait for our message.</p><button class="btn-submit" onclick="location.reload()">Close</button></div></div>
 
     <script>
-        const materialSelect = document.getElementById('material');
-        const photoOnlyGroup = document.getElementById('photo-only-group');
-        const standardOptions = document.getElementById('standard-options');
+        // PALITAN MO ITO NG RENDER URL MO KUNG IBA ANG NASA DASHBOARD MO
+        const BASE_URL = 'https://flora-sienna-shop.onrender.com';
 
+        const materialSelect = document.getElementById('material');
         materialSelect.addEventListener('change', (e) => {
             if (e.target.value === 'Inspo Picture') {
-                photoOnlyGroup.classList.remove('hidden');
-                standardOptions.classList.add('hidden');
-                document.getElementById('budget').required = false;
+                document.getElementById('photo-only-group').classList.remove('hidden');
+                document.getElementById('standard-options').classList.add('hidden');
             } else {
-                photoOnlyGroup.classList.add('hidden');
-                standardOptions.classList.remove('hidden');
-                document.getElementById('budget').required = true;
+                document.getElementById('photo-only-group').classList.add('hidden');
+                document.getElementById('standard-options').classList.remove('hidden');
             }
         });
 
-        fetch('https://flora-sienna.onrender.com/api/onhand')
-            .then(res => res.json())
-            .then(data => {
-                const grid = document.getElementById('onhand-grid');
-                if (data.length === 0) { grid.innerHTML = '<p class="empty-msg">Nothing to show at the moment.</p>'; return; }
-                grid.innerHTML = data.map(item => `<div class="card"><img src="${item.image}"><h3>${item.name}</h3><p class="price">₱${item.price}</p></div>`).join('');
-            });
+        // Load On-Hand
+        fetch(`${BASE_URL}/api/onhand`).then(res => res.json()).then(data => {
+            const grid = document.getElementById('onhand-grid');
+            grid.innerHTML = data.length ? data.map(item => `<div class="card"><img src="${item.image}"><h3>${item.name}</h3><p class="price">₱${item.price}</p></div>`).join('') : 'No items yet.';
+        });
 
-        fetch('https://flora-sienna.onrender.com/api/myworks')
-            .then(res => res.json())
-            .then(data => {
-                const grid = document.getElementById('works-grid');
-                if (data.length === 0) { grid.innerHTML = '<p class="empty-msg">Nothing to show at the moment.</p>'; return; }
-                grid.innerHTML = data.map(item => `<div class="card"><img src="${item.image}"></div>`).join('');
-            });
+        // Load My Works
+        fetch(`${BASE_URL}/api/myworks`).then(res => res.json()).then(data => {
+            const grid = document.getElementById('works-grid');
+            grid.innerHTML = data.length ? data.map(item => `<div class="card"><img src="${item.image}"></div>`).join('') : 'No works added yet.';
+        });
 
-        const getBase64 = (file) => {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        };
+        const getBase64 = (file) => new Promise((res, rej) => {
+            const reader = new FileReader(); reader.readAsDataURL(file);
+            reader.onload = () => res(reader.result); reader.onerror = e => rej(e);
+        });
 
         document.getElementById('orderForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            let inspoBase64 = null;
-            const fileInput = document.getElementById('inspo-file');
-            if (materialSelect.value === 'Inspo Picture' && fileInput.files.length > 0) {
-                inspoBase64 = await getBase64(fileInput.files[0]);
-            }
+            let img = null;
+            const file = document.getElementById('inspo-file').files[0];
+            if (file) img = await getBase64(file);
 
-            const orderData = {
-                material: document.getElementById('material').value,
-                budget: document.getElementById('budget').value || "N/A (Inspo Based)",
-                details: document.getElementById('flower-details').value || "N/A (Inspo Based)",
+            const order = {
+                material: materialSelect.value,
+                budget: document.getElementById('budget').value,
+                details: document.getElementById('flower-details').value,
                 name: document.getElementById('c-name').value,
                 fb: document.getElementById('c-fb').value,
                 contact: document.getElementById('c-number').value,
-                place: document.getElementById('c-place').value,
-                dateNeeded: document.getElementById('c-date').value,
-                timeNeeded: document.getElementById('c-time').value,
-                inspoImage: inspoBase64,
+                inspoImage: img,
                 orderDate: new Date().toLocaleString()
             };
 
             try {
-                const response = await fetch('http://localhost:3000/api/orders', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderData)
+                await fetch(`${BASE_URL}/api/orders`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(order)
                 });
-                const savedOrder = await response.json();
-
-                document.getElementById('r-name').innerText = savedOrder.name;
-                document.getElementById('r-place').innerText = savedOrder.place;
-                document.getElementById('r-datetime').innerText = `${savedOrder.dateNeeded} at ${savedOrder.timeNeeded}`;
-                document.getElementById('r-number').innerText = savedOrder.contact;
-                document.getElementById('r-style').innerText = savedOrder.material;
-                
                 document.getElementById('receipt-modal').style.display = 'flex';
-                document.getElementById('orderForm').reset();
-                photoOnlyGroup.classList.add('hidden');
-                standardOptions.classList.remove('hidden');
-            } catch (error) { alert("Server is offline!"); }
+            } catch (err) {
+                alert("Server Error! Siguraduhing Live ang Render.");
+            }
         });
-
-        function closeReceipt() { document.getElementById('receipt-modal').style.display = 'none'; }
     </script>
 </body>
 </html>
